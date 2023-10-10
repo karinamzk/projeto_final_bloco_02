@@ -12,16 +12,25 @@ namespace farmacia.Service.implements
         {
             _Context = context;
         }
-        public async Task<IEnumerable<Produto>> GettAll()
+        public async Task<IEnumerable<Produto>> GetAll()
         {
             return await _Context.Produtos
-
+                .Include(p => p.Categorias)
                 .ToListAsync();
         }
 
         public async Task<Produto?> Create(Produto produto)
         {
-          
+            if (produto.Categorias is not null)
+            {
+                var BuscaCategoria = await _Context.Categorias.FindAsync
+                    (produto.Categorias.Id);
+
+                if (BuscaCategoria is null)
+                    return null;
+
+                produto.Categorias = BuscaCategoria;
+            }
             await _Context.Produtos.AddAsync(produto);
             await _Context.SaveChangesAsync();
 
@@ -34,7 +43,7 @@ namespace farmacia.Service.implements
             try
             {
                 var Produto = await _Context.Produtos
-                    
+                    .Include(p => p.Categorias)
                     .FirstAsync(i => i.Id == id);
 
                 return Produto;
@@ -48,7 +57,7 @@ namespace farmacia.Service.implements
         public async Task<IEnumerable<Produto>> GetByNome(string nome)
         {
             var Produto = await _Context.Produtos
-                   
+                   .Include(p => p.Categorias)
                    .Where(p => p.Nome.Contains(nome))
                    .ToListAsync();
 
@@ -63,6 +72,16 @@ namespace farmacia.Service.implements
             if (ProdutoUpdate is null)
                 return null;
 
+            if (produto.Categorias is not null)
+            {
+                var BuscaCategoria = await _Context.Categorias.FindAsync(produto.Categorias.Id);
+
+                if (BuscaCategoria is null)
+                    return null;
+
+                produto.Categorias = BuscaCategoria;
+
+            }
 
 
             _Context.Entry(ProdutoUpdate).State = EntityState.Detached;

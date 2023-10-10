@@ -23,7 +23,7 @@ namespace farmacia.Controller
         [HttpGet]
         public async Task<ActionResult> GettAll()
         {
-            return Ok(await _produtoService.GettAll());
+            return Ok(await _produtoService.GetAll());
         }
 
         [HttpGet("{id}")]
@@ -57,7 +57,7 @@ namespace farmacia.Controller
 
             if (Resposta is null)
             {
-                return BadRequest("Produto não encontrado!");
+                return BadRequest("Categoria não encontrado!");
             }
             return CreatedAtAction(nameof(GetById), new { id = produto.Id }, produto);
         }
@@ -76,7 +76,7 @@ namespace farmacia.Controller
             var Resposta = await _produtoService.Update(produto);
 
             if (Resposta is null)
-                return NotFound("Produto não foi encontrada");
+                return NotFound("Produto e/ou Categoria não encontradas");
 
             return Ok(Resposta);
         }

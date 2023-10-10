@@ -4,7 +4,7 @@ namespace farmacia.Service
 {
     public interface IProdutoService
     {
-        Task<IEnumerable<Produto>> GettAll();
+        Task<IEnumerable<Produto>> GetAll();
 
         Task<Produto?> GetById(long id);
 
