@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using farmacia.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApplication1.Data
 {
@@ -9,7 +10,14 @@ namespace WebApplication1.Data
 
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Produto>().ToTable("tb_produtos");
+           
+        }
 
+        // Registrar DbSet - Objeto responsável por manipular a Tabela
+        public DbSet<Produto> Produtos { get; set; } = null!;
 
 
 

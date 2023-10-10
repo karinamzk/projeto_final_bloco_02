@@ -1,6 +1,11 @@
 
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
+using farmacia.Model;
+using farmacia.Validator;
+using farmacia.Service;
+using farmacia.Service.implements;
 
 namespace farmacia
 {
@@ -13,6 +18,18 @@ namespace farmacia
             // Add services to the container.
             builder.Services.AddControllers();
 
+            // Add Controller Class
+            builder.Services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+
+                    options.SerializerSettings.ReferenceLoopHandling =
+                    Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                }
+
+             );
+
             // Conexão com o Banco de dados
             var connectionString = builder.Configuration.
                     GetConnectionString("DefaultConnection");
@@ -20,6 +37,12 @@ namespace farmacia
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(connectionString)
             );
+
+            // Validação das Entidades
+            builder.Services.AddTransient<IValidator<Produto>, ProdutoValidator>();
+
+            // Registrar as Classes e Interfaces Service
+            builder.Services.AddScoped<IProdutoService, ProdutoService>();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
